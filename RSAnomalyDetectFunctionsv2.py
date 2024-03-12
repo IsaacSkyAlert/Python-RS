@@ -23,53 +23,44 @@ def Tranform_Counts_to_Vel(Data):
 
 nsta = 40
 nlta = 600
+clean_value = 150
+constant_norm_sta = 1. / nsta 
+constant_norm_lta = 1. / nlta
+complement_sta = 1 - constant_norm_sta 
+complement_lta = 1 - constant_norm_lta
 def STA_LTA(Signal):
     import numpy as np
     ndat = len(Signal)
-    constant_norm_sta = 1. / nsta 
-    constant_norm_lta = 1. / nlta
     sta = 0.
     lta = np.finfo(0.0).tiny 
     Signal = np.square(Signal)
     Caracteristic_Function = np.zeros(ndat, dtype=np.float64)
-    complement_sta = 1 - constant_norm_sta 
-    complement_lta = 1 - constant_norm_lta
     for i in range(1, ndat):
         sta = constant_norm_sta * Signal[i] + complement_sta * sta
         lta = constant_norm_lta * Signal[i] + complement_lta * lta
         Caracteristic_Function[i] = sta / lta
-    Caracteristic_Function[:150] = 0 
+    Caracteristic_Function[:clean_value] = 0 
     return Caracteristic_Function
  
 thr_on = 6.62
 def Anomaly_Did_Start(Signal):
     STA_LTA_Signal = STA_LTA(Signal)
-    anomaly_start = False
     for i in range(len(STA_LTA_Signal)):
         if STA_LTA_Signal[i] > thr_on:
-            anomaly_start = True
-            break
-    if anomaly_start:
-        return i
-    else:
-        return 0
+            return i
+    return 0
     
 thr_off = 0.3    
 def Anomaly_Did_End(Signal, n_act):
     if n_act <= 0:
         return None
-    else:
-        STA_LTA_Signal = STA_LTA(Signal)
-        anomaly_end = False
-        n_start = n_act + 1
-        for j in range(n_start,len(STA_LTA_Signal)):
-            if STA_LTA_Signal[j] < thr_off:
-                anomaly_end = True
-                break
-        if anomaly_end:
+    
+    STA_LTA_Signal = STA_LTA(Signal)
+    n_start = n_act + 1
+    for j in range(n_start,len(STA_LTA_Signal)):
+        if STA_LTA_Signal[j] < thr_off:
             return j
-        else:
-            return 0
+    return 0
 
 def Detect_Anomaly_Plot(Signal, start_time):
     import numpy as np
