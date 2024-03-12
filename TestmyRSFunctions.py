@@ -34,12 +34,9 @@ class Test_Transform_Counts_To_Gals(unittest.TestCase):
             self.assertEqual(len(New_Data), len(Data),
                              f"Las longitudes deberían ser las mismas.")
 
-if __name__ == '__main__':
-    unittest.main() 
-    
     
 class Test_Detection_Anomaly(unittest.TestCase):
-    def negative_test_anomaly_did_start(self):
+    def test_anomaly_did_start_negative(self):
         Signal1 = Noise1
         Signal2 = Noise2
         Signal3 = Noise3
@@ -56,7 +53,7 @@ class Test_Detection_Anomaly(unittest.TestCase):
                            f"El valor devuelto debería ser cero.")
         self.assertEqual(n_act4, 0,
                            f"El valor devuelto debería ser cero.")
-    def positive_test_anomaly_did_start(self):
+    def test_anomaly_did_start_positive(self):
         Signal1 = EHZ_Counts
         Signal2 = ENN_Counts
         Signal3 = ENE_Counts
@@ -75,15 +72,12 @@ class Test_Detection_Anomaly(unittest.TestCase):
                            f"El valor devuelto debería ser mayor que cero.")
         
 
-    def negative_test_anomaly_did_end(self):
-        Signal1 = Noise1
-        Signal2 = Noise2
-        Signal3 = Noise3
-        Signal4 = Noise4
+    def test_anomaly_did_end_negative(self):
+        Signal1 = EHZ_Counts
         n_des1 = Anomaly_Did_End(Signal1,0)
-        n_des2 = Anomaly_Did_End(Signal2,0.0)
-        n_des3 = Anomaly_Did_End(Signal3,-1)
-        n_des4 = Anomaly_Did_End(Signal4,-5.0)
+        n_des2 = Anomaly_Did_End(Signal1,0.0)
+        n_des3 = Anomaly_Did_End(Signal1,-1)
+        n_des4 = Anomaly_Did_End(Signal1,-5.0)
         self.assertEqual(n_des1, None,
                            f"El valor devuelto debería ser None.")
         self.assertEqual(n_des2, None,
@@ -93,7 +87,7 @@ class Test_Detection_Anomaly(unittest.TestCase):
         self.assertEqual(n_des4, None,
                            f"El valor devuelto debería ser None.")
         
-    def positive_test_anomaly_did_end(self):
+    def test_anomaly_did_end_positive(self):
         Signal1 = EHZ_Counts
         Signal2 = ENN_Counts
         Signal3 = ENE_Counts
@@ -106,6 +100,8 @@ class Test_Detection_Anomaly(unittest.TestCase):
         n_des2 = Anomaly_Did_End(Signal2,n_act2)
         n_des3 = Anomaly_Did_End(Signal3,n_act3)
         n_des4 = Anomaly_Did_End(Signal4,n_act4)
+        print(n_act1,n_act2,n_act3,n_act4)
+        print(n_des1,n_des2,n_des3,n_des4)
         self.assertGreater(n_des1, 0,
                            f"El valor devuelto debería ser mayor que cero.")
         self.assertGreater(n_des2, 0,
@@ -115,7 +111,24 @@ class Test_Detection_Anomaly(unittest.TestCase):
         self.assertGreater(n_des4, 0,
                            f"El valor devuelto debería ser mayor que cero.")
         
+    def test_anomaly_did_end_positive_noise(self):
+        Signal1 = Noise1
+        Signal2 = Noise2
+        Signal3 = Noise3
+        Signal4 = Noise4
+        n_des1 = Anomaly_Did_End(Signal1,50)
+        n_des2 = Anomaly_Did_End(Signal2,150)
+        n_des3 = Anomaly_Did_End(Signal3,180)
+        n_des4 = Anomaly_Did_End(Signal4,200)
+        print(n_des1,n_des2,n_des3,n_des4)
+        self.assertGreater(n_des1, 0,
+                           f"El valor devuelto debería ser mayor que cero.")
+        self.assertEqual(n_des2, 0,
+                           f"El valor devuelto debería ser cero.")
+        self.assertEqual(n_des3, 0,
+                           f"El valor devuelto debería ser cero.")
+        self.assertEqual(n_des4, 0,
+                           f"El valor devuelto debería ser cero.")
+        
 if __name__ == '__main__':
     unittest.main()
-        
-    
