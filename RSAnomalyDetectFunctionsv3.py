@@ -58,6 +58,10 @@ def Anomaly_Did_End(STA_LTA_Signal, n_act):
         if STA_LTA_Signal[j] < thr_off:
             return j
     return None
+    
+def Get_Slice(Signal, i, j):
+    Slice = Signal[i:j]
+    return Slice
 
 def Get_Max_Amplitude(Signal):
     max_amplitude = max(Signal**2)
